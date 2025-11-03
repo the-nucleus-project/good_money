@@ -1,8 +1,6 @@
 # Good Money
 
-"Its good money🤷🏽‍♀️🤷🏽‍♀️"
-
-- A minimal Money and currency package.
+A minimal Money and currency package.
 
 ## Features
 
