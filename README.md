@@ -131,12 +131,10 @@ This package follows Semantic Versioning (SemVer):
 
 
 ## Upcoming
-
-- Pre-1.0 (0.x)
-    - Currency conversion functionality (exchange rates)
     
 - Post-1.0 (1.x)
     - **Enhanced formatting options**
+        - **Currency conversion**: Based on exchange rates convert currencies
         - **Currency symbol formatting**: Display amounts with symbols (`$100.50`, `€100,50`, `£100.50`) with proper symbol positioning (before/after) based on currency rules
         - **Locale-aware number formatting**: Thousand separators (`,` or `.`) and decimal separators (`.` or `,`) according to locale conventions (e.g., `1,234.56 USD` vs `1.234,56 EUR`)
         - **Accounting format**: Display negative amounts in accounting notation `(100.50)` instead of `-100.50`
