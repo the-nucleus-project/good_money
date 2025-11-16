@@ -16,19 +16,19 @@ A minimal Money and currency package.
 ### Creating Money
 
 ```go
-import "github.com/the-nucleus-project/good_money"
+import "github.com/the-nucleus-project/goodmoney"
 
 // Create money instances
-m1, _ := good_money.New(100.50, good_money.ETB)  // 100.50 ETB
-m2, _ := good_money.New(50.25, good_money.ETB)   // 50.25 ETB
-m3, _ := good_money.NewZero(good_money.ETB)      // 0.00 ETB
+m1, _ := goodmoney.New(100.50, goodmoney.ETB)  // 100.50 ETB
+m2, _ := goodmoney.New(50.25, goodmoney.ETB)   // 50.25 ETB
+m3, _ := goodmoney.NewZero(goodmoney.ETB)      // 0.00 ETB
 ```
 
 ### Arithmetic Operations
 
 ```go
 // Addition
-sum, _ := good_money.Add(m1, m2)
+sum, _ := goodmoney.Add(m1, m2)
 fmt.Println(sum)  // 150.75 ETB
 
 // Subtraction
@@ -60,12 +60,12 @@ if m1.Equals(m2) {
 
 ```go
 // Split by ratios
-total, _ := good_money.New(100.00, good_money.ETB)
+total, _ := goodmoney.New(100.00, goodmoney.ETB)
 parts, _ := total.Allocate(3, 2, 1)  // 3:2:1 ratio
 // Result: 50.00 ETB, 33.34 ETB, 16.66 ETB
 
 // Split by percentages
-payment, _ := good_money.New(1000.00, good_money.ETB)
+payment, _ := goodmoney.New(1000.00, goodmoney.ETB)
 shares, _ := payment.AllocateByPercentage(60.0, 25.0, 15.0)
 // Result: 600.00 ETB, 250.00 ETB, 150.00 ETB
 ```
@@ -73,8 +73,8 @@ shares, _ := payment.AllocateByPercentage(60.0, 25.0, 15.0)
 ### Rounding
 
 ```go
-amount, _ := good_money.New(100.55, good_money.ETB)
-scheme := good_money.RoundHalfUp
+amount, _ := goodmoney.New(100.55, goodmoney.ETB)
+scheme := goodmoney.RoundHalfUp
 rounded := amount.Round(&scheme)
 fmt.Println(rounded)  // 101.00 ETB
 ```
@@ -82,7 +82,7 @@ fmt.Println(rounded)  // 101.00 ETB
 ### Utility Methods
 
 ```go
-m, _ := good_money.New(100.50, good_money.ETB)
+m, _ := goodmoney.New(100.50, goodmoney.ETB)
 
 m.IsZero()       // false
 m.IsPositive()   // true
@@ -95,7 +95,7 @@ m.Negative()  // -100.50 ETB
 ### Formatting
 
 ```go
-m, _ := good_money.New(100.50, good_money.ETB)
+m, _ := goodmoney.New(100.50, goodmoney.ETB)
 fmt.Println(m)        // 100.50 ETB
 fmt.Printf("%s", m)   // 100.50 ETB
 ```
@@ -104,12 +104,12 @@ fmt.Printf("%s", m)   // 100.50 ETB
 
 ```go
 // Marshal to JSON
-m, _ := good_money.New(100.50, good_money.ETB)
+m, _ := goodmoney.New(100.50, goodmoney.ETB)
 jsonBytes, _ := m.MarshalJSON()
 // {"amount":100.5,"currency":"ETB"}
 
 // Unmarshal from JSON
-var unmarshaled good_money.Money
+var unmarshaled goodmoney.Money
 unmarshaled.UnmarshalJSON(jsonBytes)
 fmt.Println(&unmarshaled)  // 100.50 ETB
 ```
@@ -117,8 +117,8 @@ fmt.Println(&unmarshaled)  // 100.50 ETB
 ### Currency Validation
 
 ```go
-good_money.ValidateCurrency(good_money.ETB)  // true
-good_money.ValidateCurrency("INVALID")      // false
+goodmoney.ValidateCurrency(goodmoney.ETB)  // true
+goodmoney.ValidateCurrency("INVALID")      // false
 ```
 
 ## Versioning
@@ -252,7 +252,7 @@ Benchmark results (go 1.x, 2s per benchmark, 4 CPUs):
 
 > **Disclaimer:** This comparison was generated using AI tools and is based on publicly available documentation and code analysis as of the latest review. Feature support may vary by version. Performance metrics for other libraries are estimates and should be verified with actual benchmarks. Users are encouraged to verify claims independently.
 
-| Feature | **good_money** | govalues | rhymond | bojanz/currency |
+| Feature | **goodmoney** | govalues | rhymond | bojanz/currency |
 |---------|----------------|----------|---------|-----------------|
 | **Storage** | `int64` minor units | Floating point (`float64`) | Fixed point (decimal) | Floating point (`decimal.Decimal`) |
 | **Precision** | Currency-dependent (0-4 decimals) | 19 digits | 18 digits | 39 digits |
@@ -271,7 +271,7 @@ Benchmark results (go 1.x, 2s per benchmark, 4 CPUs):
 | **Database Support** | ✅ `Scan`/`Value` | ✅ | ✅ | ✅ |
 | **Immutability** | ✅ | ✅ | ✅ | ✅ |
 
-**Key Advantages of good_money:**
+**Key Advantages of goodmoney:**
 - ✅ **Fast arithmetic** - Simple operations are 2-6 ns/op with zero allocations
 - ✅ **Memory efficient** - Most operations zero-allocation (0 B/op)
 - ✅ **Currency-aware** - Full ISO 4217 support with proper decimal handling per currency
