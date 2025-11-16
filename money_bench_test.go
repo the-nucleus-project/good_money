@@ -1,4 +1,4 @@
-package good_money
+package goodmoney
 
 import (
 	"encoding/json"

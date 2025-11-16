@@ -1,4 +1,4 @@
-package good_money
+package goodmoney
 
 import "errors"
 
@@ -32,11 +32,12 @@ func ValidateCurrency(code string) bool {
 // Returns nil if the currency code doesn't exist.
 //
 // Example:
-//   currency := GetCurrency("USD")
-//   if currency != nil {
-//       // currency.NumericCode == "840"
-//       // currency.MinorUnit == 2
-//   }
+//
+//	currency := GetCurrency("USD")
+//	if currency != nil {
+//	    // currency.NumericCode == "840"
+//	    // currency.MinorUnit == 2
+//	}
 func GetCurrency(code string) *Currency {
 	c, err := getCurrency(code)
 	if err != nil {
@@ -49,8 +50,9 @@ func GetCurrency(code string) *Currency {
 // It returns the Currency, the currency code (e.g., "USD"), and an error if the numeric code doesn't exist.
 //
 // Example:
-//   currency, code, err := GetCurrencyByNumericCode("840")
-//   // Returns USD currency, "USD", nil
+//
+//	currency, code, err := GetCurrencyByNumericCode("840")
+//	// Returns USD currency, "USD", nil
 func GetCurrencyByNumericCode(numericCode string) (Currency, string, error) {
 	for code, currency := range CurrencyMap {
 		if currency.NumericCode == numericCode {

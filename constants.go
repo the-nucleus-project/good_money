@@ -1,4 +1,4 @@
-package good_money
+package goodmoney
 
 // ISO 4217 Currency codes
 

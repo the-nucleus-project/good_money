@@ -1,4 +1,4 @@
-package good_money
+package goodmoney
 
 func absInt64(x int64) int64 {
 	if x < 0 {
