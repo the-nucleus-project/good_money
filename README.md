@@ -10,6 +10,7 @@ A minimal Money and currency package.
 - **8 rounding schemes** - HalfUp, HalfDown, HalfEven (banker's), and more
 - **Overflow protection** - Automatic detection and error reporting for arithmetic overflow/underflow
 - **Zero-allocation performance** - Most operations allocate 0 bytes, optimized for speed
+- **Advanced formatting** - Locale-aware formatting with multiple modes (Standard, Accounting, Compact, Minimal, Symbol, Code)
 
 ## Quick-start
 
@@ -115,10 +116,22 @@ import "golang.org/x/text/language"
 
 m, _ := goodmoney.New(1234.56, goodmoney.USD)
 
-// Format with locale
+// Format with locale - automatically uses locale-specific number formatting
 fmt.Println(m.Format(language.AmericanEnglish))  // $1,234.56
 fmt.Println(m.Format(language.German))            // 1.234,56 $
 fmt.Println(m.Format(language.French))           // 1 234,56 $
+fmt.Println(m.Format(language.Italian))          // 1.234,56 $
+
+// Different currencies with locale formatting
+eur, _ := goodmoney.New(1234.56, goodmoney.EUR)
+fmt.Println(eur.Format(language.German))         // 1.234,56 €
+fmt.Println(eur.Format(language.French))         // 1 234,56 €
+
+gbp, _ := goodmoney.New(1234.56, goodmoney.GBP)
+fmt.Println(gbp.Format(language.BritishEnglish)) // £1,234.56
+
+jpy, _ := goodmoney.New(1234.0, goodmoney.JPY)
+fmt.Println(jpy.Format(language.Japanese))       // ¥1,234
 ```
 
 #### Format Modes
@@ -126,29 +139,38 @@ fmt.Println(m.Format(language.French))           // 1 234,56 $
 ```go
 m, _ := goodmoney.New(1234.56, goodmoney.USD)
 
-// Standard format (default)
+// Standard format (default) - Locale-aware with currency symbol
 m.FormatWithMode(language.AmericanEnglish, goodmoney.FormatStandard)
 // Returns: "$1,234.56"
 
-// Accounting format (parentheses for negatives)
+// Accounting format - Parentheses for negative amounts
 neg, _ := goodmoney.New(-100.50, goodmoney.USD)
 neg.FormatWithMode(language.AmericanEnglish, goodmoney.FormatAccounting)
 // Returns: "($100.50)"
+pos, _ := goodmoney.New(100.50, goodmoney.USD)
+pos.FormatWithMode(language.AmericanEnglish, goodmoney.FormatAccounting)
+// Returns: "$100.50"
 
-// Compact notation
+// Compact notation - Abbreviated formats for large amounts
 large, _ := goodmoney.New(1500000.00, goodmoney.USD)
 large.FormatWithMode(language.AmericanEnglish, goodmoney.FormatCompact)
 // Returns: "$1.5M"
+thousands, _ := goodmoney.New(1500.00, goodmoney.USD)
+thousands.FormatWithMode(language.AmericanEnglish, goodmoney.FormatCompact)
+// Returns: "$1.5K"
+billions, _ := goodmoney.New(5300000000.00, goodmoney.USD)
+billions.FormatWithMode(language.AmericanEnglish, goodmoney.FormatCompact)
+// Returns: "$5.3B"
 
-// Symbol only
+// Symbol only - Currency symbol without code
 m.FormatWithMode(language.AmericanEnglish, goodmoney.FormatSymbol)
 // Returns: "$1,234.56"
 
-// Code only (same as String())
+// Code only - Currency code format (same as String())
 m.FormatWithMode(language.AmericanEnglish, goodmoney.FormatCode)
 // Returns: "1234.56 USD"
 
-// Minimal (no thousand separators)
+// Minimal - No thousand separators
 m.FormatWithMode(language.AmericanEnglish, goodmoney.FormatMinimal)
 // Returns: "$1234.56"
 ```
@@ -156,12 +178,22 @@ m.FormatWithMode(language.AmericanEnglish, goodmoney.FormatMinimal)
 #### Format Options
 
 ```go
+// Flexible formatting with FormatOptions struct
 opts := goodmoney.FormatOptions{
     Locale: language.German,
     Mode:   goodmoney.FormatStandard,
 }
 m.FormatWithOptions(opts)
 // Returns: "1.234,56 $" (German formatting)
+
+// Combine different modes with locales
+accountingOpts := goodmoney.FormatOptions{
+    Locale: language.French,
+    Mode:   goodmoney.FormatAccounting,
+}
+neg, _ := goodmoney.New(-1234.56, goodmoney.EUR)
+neg.FormatWithOptions(accountingOpts)
+// Returns: "(1 234,56 €)" (French accounting format)
 ```
 
 #### Major and Minor Units
@@ -195,26 +227,15 @@ goodmoney.ValidateCurrency("INVALID")      // false
 
 ## Upcoming
     
-- Post-1.0 (1.x)
-    - **Enhanced formatting options** ✅ (Implemented)
-        - ✅ **Currency symbol formatting**: Display amounts with symbols (`$100.50`, `€100,50`, `£100.50`) with proper symbol positioning (before/after) based on currency rules
-        - ✅ **Locale-aware number formatting**: Thousand separators (`,` or `.`) and decimal separators (`.` or `,`) according to locale conventions (e.g., `1,234.56 USD` vs `1.234,56 EUR`)
-        - ✅ **Accounting format**: Display negative amounts in accounting notation `(100.50)` instead of `-100.50`
-        - ✅ **Compact notation**: Abbreviated formats for large amounts (`$1.5K`, `$1.2M`, `$5.3B`, `€2.4K`)
-        - ✅ **Format modes**: Multiple display modes (`Standard`, `Accounting`, `Compact`, `Minimal`, `Symbol`, `Code`)
-        - ✅ **Internationalization**: Support for different locales (`en-US`, `de-DE`, `fr-FR`, `it-IT`, etc.) with locale-specific formatting rules
-        - ✅ **Separate component access**: Access major and minor units independently (e.g., `100 dollars` and `50 cents`)
-        - **Custom format strings**: Fine-grained control via format patterns (e.g., `Format("$#,###.00")`, `Format("€#.##0,00")`) - Planned for future release
-    - **Currency conversion**: Based on exchange rates convert currencies
+- under development
+
+    - **Custom format strings** - Fine-grained control via format patterns (e.g., `Format("$#,###.00")`, `Format("€#.##0,00")`)
+    - **Currency conversion** - Based on exchange rates convert currencies
     - **Money parsing** - Parse from formatted strings ("$100.50", "100.50 USD", "€100,50")
     - **Percentage operations** - Calculate percentage of money (e.g., 15% of $100)
-    - ✅ **Locale-aware formatting** - Format with currency symbols, locale-specific separators ($100.50 vs €100,50) - Implemented
-    - **Human-readable formatting** - "one hundred dollars and fifty cents"
+    - **Human-readable formatting** - "one hundred dollars and fifty cents" (FormatHumanReadable mode defined but not yet implemented)
     - **Money ranges/intervals** - Check if money falls within a range (between two amounts)
     - **Money scaling by float** - Multiply/divide by float64 (for ratios, percentages, exchange rates)
-    - ✅ **Currency symbol formatting** - Format with symbol positioning (before/after based on currency) - Implemented
-    - ✅ **Accounting format** - Format negative amounts as (100.50) instead of -100.50 - Implemented
-    - ✅ **Major/Minor unit access** - Get separate major and minor unit components - Implemented
     - **Money aggregation** - Min(), Max(), Average() operations for slices of Money
     - **Money parsing validation** - Validate and parse money from various string formats
     - **Tolerance-based comparison** - Compare money within a tolerance range (for floating-point conversion)
