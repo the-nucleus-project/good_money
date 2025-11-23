@@ -695,8 +695,8 @@ func (m Money) FormatWithOptions(opts FormatOptions) string {
 	currencyCode := m.Currency()
 	amount := m.Amount()
 	isNegative := m.amount < 0
-	symbol := getCurrencySymbol(currencyCode)
-	position := getSymbolPosition(currencyCode, opts.Locale)
+	symbol := getCurrencySymbol(m.currency, currencyCode)
+	position := getSymbolPosition(m.currency)
 
 	var result string
 
