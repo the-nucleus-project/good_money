@@ -15,7 +15,7 @@ A minimal Money and currency package.
 
 ### Installation
 
-```go
+```curl
 go get github.com/nucleus-proj/goodmoney
 ```
 
