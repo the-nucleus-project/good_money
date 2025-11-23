@@ -3879,3 +3879,127 @@ func TestGetCurrency(t *testing.T) {
 		})
 	}
 }
+
+func TestMajorUnit(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name              string
+		inputAmount       float64
+		inputCurrencyCode string
+		want              int64
+	}{
+		{
+			name:              "USD with cents",
+			inputAmount:       100.50,
+			inputCurrencyCode: USD,
+			want:              100,
+		},
+		{
+			name:              "USD whole number",
+			inputAmount:       100.00,
+			inputCurrencyCode: USD,
+			want:              100,
+		},
+		{
+			name:              "USD with single cent",
+			inputAmount:       100.01,
+			inputCurrencyCode: USD,
+			want:              100,
+		},
+		{
+			name:              "JPY (no decimals)",
+			inputAmount:       1000.0,
+			inputCurrencyCode: JPY,
+			want:              1000,
+		},
+		{
+			name:              "negative amount",
+			inputAmount:       -100.50,
+			inputCurrencyCode: USD,
+			want:              -100,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			money, err := New(tt.inputAmount, tt.inputCurrencyCode)
+			if err != nil {
+				t.Fatalf("New() unexpected error: %v", err)
+			}
+
+			got := money.MajorUnit()
+			if got != tt.want {
+				t.Errorf("MajorUnit() = %d, want %d", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMinorUnit(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name              string
+		inputAmount       float64
+		inputCurrencyCode string
+		want              int64
+	}{
+		{
+			name:              "USD with cents",
+			inputAmount:       100.50,
+			inputCurrencyCode: USD,
+			want:              50,
+		},
+		{
+			name:              "USD whole number",
+			inputAmount:       100.00,
+			inputCurrencyCode: USD,
+			want:              0,
+		},
+		{
+			name:              "USD with single cent",
+			inputAmount:       100.01,
+			inputCurrencyCode: USD,
+			want:              1,
+		},
+		{
+			name:              "JPY (no decimals)",
+			inputAmount:       1000.0,
+			inputCurrencyCode: JPY,
+			want:              0,
+		},
+		{
+			name:              "negative amount",
+			inputAmount:       -100.50,
+			inputCurrencyCode: USD,
+			want:              -50,
+		},
+		{
+			name:              "BHD (3 decimals)",
+			inputAmount:       100.123,
+			inputCurrencyCode: BHD,
+			want:              123,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			money, err := New(tt.inputAmount, tt.inputCurrencyCode)
+			if err != nil {
+				t.Fatalf("New() unexpected error: %v", err)
+			}
+
+			got := money.MinorUnit()
+			if got != tt.want {
+				t.Errorf("MinorUnit() = %d, want %d", got, tt.want)
+			}
+		})
+	}
+}

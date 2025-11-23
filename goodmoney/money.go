@@ -6,6 +6,8 @@ import (
 	"errors"
 	"fmt"
 	"math"
+
+	"golang.org/x/text/language"
 )
 
 var (
@@ -626,6 +628,118 @@ func (m Money) String() string {
 	formattedAmount := fmt.Sprintf(formatStr, amount)
 
 	return fmt.Sprintf("%s %s", formattedAmount, currencyCode)
+}
+
+// MajorUnit returns the major unit portion of the money (e.g., dollars for USD).
+// For $100.50, this returns 100.
+func (m Money) MajorUnit() int64 {
+	if m.currency == nil {
+		return 0
+	}
+	multiplier := int64(math.Pow10(m.currency.MinorUnit))
+	return m.amount / multiplier
+}
+
+// MinorUnit returns the minor unit portion of the money (e.g., cents for USD).
+// For $100.50, this returns 50.
+func (m Money) MinorUnit() int64 {
+	if m.currency == nil {
+		return 0
+	}
+	multiplier := int64(math.Pow10(m.currency.MinorUnit))
+	return m.amount % multiplier
+}
+
+// Format formats the money with the specified locale using standard formatting.
+// It uses locale-aware number formatting with currency symbol.
+//
+// Example:
+//
+//	m, _ := New(1234.56, USD)
+//	formatted := m.Format(language.AmericanEnglish)
+//	// Returns: "$1,234.56"
+func (m Money) Format(locale language.Tag) string {
+	return m.FormatWithMode(locale, FormatStandard)
+}
+
+// FormatWithMode formats the money with the specified locale and format mode.
+//
+// Example:
+//
+//	m, _ := New(1234.56, USD)
+//	formatted := m.FormatWithMode(language.AmericanEnglish, FormatAccounting)
+//	// Returns: "$1,234.56" (or "(1,234.56)" for negative amounts)
+func (m Money) FormatWithMode(locale language.Tag, mode FormatMode) string {
+	return m.FormatWithOptions(FormatOptions{
+		Locale: locale,
+		Mode:   mode,
+	})
+}
+
+// FormatWithOptions formats the money with the specified formatting options.
+//
+// Example:
+//
+//	m, _ := New(1234.56, USD)
+//	opts := FormatOptions{
+//	    Locale: language.German,
+//	    Mode:   FormatStandard,
+//	}
+//	formatted := m.FormatWithOptions(opts)
+//	// Returns: "1.234,56 $" (German formatting)
+func (m Money) FormatWithOptions(opts FormatOptions) string {
+	if m.currency == nil {
+		return fmt.Sprintf("%d (no currency)", m.amount)
+	}
+
+	currencyCode := m.Currency()
+	amount := m.Amount()
+	isNegative := m.amount < 0
+	symbol := getCurrencySymbol(currencyCode)
+	position := getSymbolPosition(currencyCode, opts.Locale)
+
+	var result string
+
+	switch opts.Mode {
+	case FormatCode:
+		// Same as String() method - format with currency code
+		formatStr := fmt.Sprintf("%%.%df", m.currency.MinorUnit)
+		formattedAmount := fmt.Sprintf(formatStr, amount)
+		result = fmt.Sprintf("%s %s", formattedAmount, currencyCode)
+
+	case FormatSymbol:
+		// Format with symbol only (no code)
+		formattedNumber := formatNumber(opts.Locale, amount, m.currency.MinorUnit)
+		result = formatWithSymbol(formattedNumber, symbol, position, isNegative)
+
+	case FormatAccounting:
+		// Accounting format with parentheses for negatives
+		formattedNumber := formatNumber(opts.Locale, amount, m.currency.MinorUnit)
+		formattedNumber = formatAccounting(formattedNumber, isNegative)
+		// For accounting format, symbol goes outside parentheses
+		if position {
+			result = symbol + formattedNumber
+		} else {
+			result = formattedNumber + " " + symbol
+		}
+
+	case FormatCompact:
+		// Compact notation for large amounts
+		result = formatCompact(amount, symbol, position, m.currency.MinorUnit)
+
+	case FormatMinimal:
+		// Minimal format without thousand separators
+		result = formatMinimal(amount, symbol, position, m.currency.MinorUnit, isNegative)
+
+	case FormatStandard:
+		fallthrough
+	default:
+		// Standard formatting
+		formattedNumber := formatNumber(opts.Locale, amount, m.currency.MinorUnit)
+		result = formatWithSymbol(formattedNumber, symbol, position, isNegative)
+	}
+
+	return result
 }
 
 // moneyJSON represents the JSON structure for Money serialization

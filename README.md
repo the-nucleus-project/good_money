@@ -100,10 +100,76 @@ m.Negative()  // -100.50 ETB
 
 ### Formatting
 
+#### Basic Formatting
+
 ```go
 m, _ := goodmoney.New(100.50, goodmoney.ETB)
 fmt.Println(m)        // 100.50 ETB
 fmt.Printf("%s", m)   // 100.50 ETB
+```
+
+#### Locale-Aware Formatting
+
+```go
+import "golang.org/x/text/language"
+
+m, _ := goodmoney.New(1234.56, goodmoney.USD)
+
+// Format with locale
+fmt.Println(m.Format(language.AmericanEnglish))  // $1,234.56
+fmt.Println(m.Format(language.German))            // 1.234,56 $
+fmt.Println(m.Format(language.French))           // 1 234,56 $
+```
+
+#### Format Modes
+
+```go
+m, _ := goodmoney.New(1234.56, goodmoney.USD)
+
+// Standard format (default)
+m.FormatWithMode(language.AmericanEnglish, goodmoney.FormatStandard)
+// Returns: "$1,234.56"
+
+// Accounting format (parentheses for negatives)
+neg, _ := goodmoney.New(-100.50, goodmoney.USD)
+neg.FormatWithMode(language.AmericanEnglish, goodmoney.FormatAccounting)
+// Returns: "($100.50)"
+
+// Compact notation
+large, _ := goodmoney.New(1500000.00, goodmoney.USD)
+large.FormatWithMode(language.AmericanEnglish, goodmoney.FormatCompact)
+// Returns: "$1.5M"
+
+// Symbol only
+m.FormatWithMode(language.AmericanEnglish, goodmoney.FormatSymbol)
+// Returns: "$1,234.56"
+
+// Code only (same as String())
+m.FormatWithMode(language.AmericanEnglish, goodmoney.FormatCode)
+// Returns: "1234.56 USD"
+
+// Minimal (no thousand separators)
+m.FormatWithMode(language.AmericanEnglish, goodmoney.FormatMinimal)
+// Returns: "$1234.56"
+```
+
+#### Format Options
+
+```go
+opts := goodmoney.FormatOptions{
+    Locale: language.German,
+    Mode:   goodmoney.FormatStandard,
+}
+m.FormatWithOptions(opts)
+// Returns: "1.234,56 $" (German formatting)
+```
+
+#### Major and Minor Units
+
+```go
+m, _ := goodmoney.New(100.50, goodmoney.USD)
+m.MajorUnit()  // 100 (dollars)
+m.MinorUnit()  // 50 (cents)
 ```
 
 ### JSON Serialization
@@ -130,25 +196,25 @@ goodmoney.ValidateCurrency("INVALID")      // false
 ## Upcoming
     
 - Post-1.0 (1.x)
-    - **Enhanced formatting options**
-        - **Currency conversion**: Based on exchange rates convert currencies
-        - **Currency symbol formatting**: Display amounts with symbols (`$100.50`, `€100,50`, `£100.50`) with proper symbol positioning (before/after) based on currency rules
-        - **Locale-aware number formatting**: Thousand separators (`,` or `.`) and decimal separators (`.` or `,`) according to locale conventions (e.g., `1,234.56 USD` vs `1.234,56 EUR`)
-        - **Accounting format**: Display negative amounts in accounting notation `(100.50)` instead of `-100.50`
-        - **Compact notation**: Abbreviated formats for large amounts (`$1.5K`, `$1.2M`, `$5.3B`, `€2.4K`)
-        - **Custom format strings**: Fine-grained control via format patterns (e.g., `Format("$#,###.00")`, `Format("€#.##0,00")`)
-        - **Format modes**: Multiple display modes (`Standard`, `Accounting`, `Compact`, `Minimal`, `Symbol`, `Code`)
-        - **Internationalization**: Support for different locales (`en-US`, `de-DE`, `fr-FR`, `it-IT`, etc.) with locale-specific formatting rules
-        - **Separate component access**: Access major and minor units independently (e.g., `100 dollars` and `50 cents`)
+    - **Enhanced formatting options** ✅ (Implemented)
+        - ✅ **Currency symbol formatting**: Display amounts with symbols (`$100.50`, `€100,50`, `£100.50`) with proper symbol positioning (before/after) based on currency rules
+        - ✅ **Locale-aware number formatting**: Thousand separators (`,` or `.`) and decimal separators (`.` or `,`) according to locale conventions (e.g., `1,234.56 USD` vs `1.234,56 EUR`)
+        - ✅ **Accounting format**: Display negative amounts in accounting notation `(100.50)` instead of `-100.50`
+        - ✅ **Compact notation**: Abbreviated formats for large amounts (`$1.5K`, `$1.2M`, `$5.3B`, `€2.4K`)
+        - ✅ **Format modes**: Multiple display modes (`Standard`, `Accounting`, `Compact`, `Minimal`, `Symbol`, `Code`)
+        - ✅ **Internationalization**: Support for different locales (`en-US`, `de-DE`, `fr-FR`, `it-IT`, etc.) with locale-specific formatting rules
+        - ✅ **Separate component access**: Access major and minor units independently (e.g., `100 dollars` and `50 cents`)
+        - **Custom format strings**: Fine-grained control via format patterns (e.g., `Format("$#,###.00")`, `Format("€#.##0,00")`) - Planned for future release
+    - **Currency conversion**: Based on exchange rates convert currencies
     - **Money parsing** - Parse from formatted strings ("$100.50", "100.50 USD", "€100,50")
     - **Percentage operations** - Calculate percentage of money (e.g., 15% of $100)
-    - **Locale-aware formatting** - Format with currency symbols, locale-specific separators ($100.50 vs €100,50)
+    - ✅ **Locale-aware formatting** - Format with currency symbols, locale-specific separators ($100.50 vs €100,50) - Implemented
     - **Human-readable formatting** - "one hundred dollars and fifty cents"
     - **Money ranges/intervals** - Check if money falls within a range (between two amounts)
     - **Money scaling by float** - Multiply/divide by float64 (for ratios, percentages, exchange rates)
-    - **Currency symbol formatting** - Format with symbol positioning (before/after based on currency)
-    - **Accounting format** - Format negative amounts as (100.50) instead of -100.50
-    - **Major/Minor unit access** - Get separate major and minor unit components
+    - ✅ **Currency symbol formatting** - Format with symbol positioning (before/after based on currency) - Implemented
+    - ✅ **Accounting format** - Format negative amounts as (100.50) instead of -100.50 - Implemented
+    - ✅ **Major/Minor unit access** - Get separate major and minor unit components - Implemented
     - **Money aggregation** - Min(), Max(), Average() operations for slices of Money
     - **Money parsing validation** - Validate and parse money from various string formats
     - **Tolerance-based comparison** - Compare money within a tolerance range (for floating-point conversion)
@@ -193,6 +259,12 @@ Money
 
 - `func (m *Money) Scan(src interface{}) error`
 - `func (m Money) Value() (driver.Value, error)`
+
+- `func (m Money) MajorUnit() int64`
+- `func (m Money) MinorUnit() int64`
+- `func (m Money) Format(locale language.Tag) string`
+- `func (m Money) FormatWithMode(locale language.Tag, mode FormatMode) string`
+- `func (m Money) FormatWithOptions(opts FormatOptions) string`
 
 ### Benchmark
 
