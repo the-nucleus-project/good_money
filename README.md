@@ -340,7 +340,7 @@ Benchmark results (go 1.x, 2s per benchmark, 4 CPUs):
 
 > **Disclaimer:** This comparison was generated using AI tools and is based on publicly available documentation and code analysis as of the latest review. Feature support may vary by version. Performance metrics for other libraries are estimates and should be verified with actual benchmarks. Users are encouraged to verify claims independently.
 
-| Feature | **goodmoney** | govalues | rhymond | bojanz/currency |
+| Feature | **goodmoney** | govalues | Rhymond/go-money | bojanz/currency |
 |---------|----------------|----------|---------|-----------------|
 | **Storage** | `int64` minor units | Floating point (`float64`) | Fixed point (decimal) | Floating point (`decimal.Decimal`) |
 | **Precision** | Currency-dependent (0-4 decimals) | 19 digits | 18 digits | 39 digits |
