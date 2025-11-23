@@ -1,4 +1,4 @@
-module github.com/the-nucleus-project/goodmoney
+module github.com/nucleus-proj/goodmoney
 
 go 1.24.0
 
