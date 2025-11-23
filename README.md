@@ -13,6 +13,12 @@ A minimal Money and currency package.
 
 ## Quick-start
 
+### Installation
+
+```curl
+go get github.com/nucleus-proj/goodmoney
+```
+
 ### Creating Money
 
 ```go
