@@ -9,8 +9,10 @@ var (
 )
 
 type Currency struct {
-	NumericCode string
-	MinorUnit   int
+	NumericCode    string
+	MinorUnit      int
+	Symbol         string // Currency symbol (e.g., "$", "€", "£"). Empty string if not set.
+	SymbolPosition bool   // true = before amount, false = after amount. Defaults to true.
 }
 
 // retrive currency by code
@@ -48,16 +50,20 @@ func GetCurrency(code string) *Currency {
 
 // GetCurrencyByNumericCode retrieves a currency by its ISO 4217 numeric code.
 // It returns the Currency, the currency code (e.g., "USD"), and an error if the numeric code doesn't exist.
+// Uses O(1) lookup via reverse map.
 //
 // Example:
 //
 //	currency, code, err := GetCurrencyByNumericCode("840")
 //	// Returns USD currency, "USD", nil
 func GetCurrencyByNumericCode(numericCode string) (Currency, string, error) {
-	for code, currency := range CurrencyMap {
-		if currency.NumericCode == numericCode {
-			return currency, code, nil
-		}
+	code, ok := numericCodeToCurrencyCode[numericCode]
+	if !ok {
+		return Currency{}, "", ErrCurrencyCodeDoesNotExist
 	}
-	return Currency{}, "", ErrCurrencyCodeDoesNotExist
+	currency, ok := CurrencyMap[code]
+	if !ok {
+		return Currency{}, "", ErrCurrencyCodeDoesNotExist
+	}
+	return currency, code, nil
 }
