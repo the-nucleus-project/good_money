@@ -13,10 +13,16 @@ A minimal Money and currency package.
 
 ## Quick-start
 
+### Installation
+
+```go
+go get github.com/nucleus-proj/goodmoney
+```
+
 ### Creating Money
 
 ```go
-import "github.com/the-nucleus-project/goodmoney"
+import "github.com/the-nucleus-proj/goodmoney"
 
 // Create money instances
 m1, _ := goodmoney.New(100.50, goodmoney.ETB)  // 100.50 ETB
