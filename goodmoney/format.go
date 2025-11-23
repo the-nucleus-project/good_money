@@ -26,6 +26,8 @@ const (
 	FormatSymbol
 	// FormatCode formats with currency code only (same as String() method)
 	FormatCode
+	// FormatHumanReadable formats amounts in words: "one hundred dollars and fifty cents"
+	FormatHumanReadable
 )
 
 // FormatOptions holds options for formatting money
