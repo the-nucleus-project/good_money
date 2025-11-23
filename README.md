@@ -121,15 +121,6 @@ goodmoney.ValidateCurrency(goodmoney.ETB)  // true
 goodmoney.ValidateCurrency("INVALID")      // false
 ```
 
-## Versioning
-
-This package follows Semantic Versioning (SemVer):
-
-- MAJOR (X.0.0): breaking API changes
-- MINOR (0.X.0): backward-compatible features and improvements
-- PATCH (0.0.X): backward-compatible bug fixes
-
-
 ## Upcoming
     
 - Post-1.0 (1.x)
