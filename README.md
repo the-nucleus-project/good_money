@@ -153,8 +153,6 @@ goodmoney.ValidateCurrency("INVALID")      // false
     - **Money parsing validation** - Validate and parse money from various string formats
     - **Tolerance-based comparison** - Compare money within a tolerance range (for floating-point conversion)
     - **Banknote/coin breakdown** - Split money into currency denominations
-    - **Format as different display modes** - Standard, accounting, compact formats    
-
 
 ## API
 
