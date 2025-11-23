@@ -130,29 +130,29 @@ goodmoney.ValidateCurrency("INVALID")      // false
 ## Upcoming
     
 - Post-1.0 (1.x)
-    - **Enhanced formatting options**
-        - **Currency conversion**: Based on exchange rates convert currencies
-        - **Currency symbol formatting**: Display amounts with symbols (`$100.50`, `€100,50`, `£100.50`) with proper symbol positioning (before/after) based on currency rules
-        - **Locale-aware number formatting**: Thousand separators (`,` or `.`) and decimal separators (`.` or `,`) according to locale conventions (e.g., `1,234.56 USD` vs `1.234,56 EUR`)
-        - **Accounting format**: Display negative amounts in accounting notation `(100.50)` instead of `-100.50`
-        - **Compact notation**: Abbreviated formats for large amounts (`$1.5K`, `$1.2M`, `$5.3B`, `€2.4K`)
-        - **Custom format strings**: Fine-grained control via format patterns (e.g., `Format("$#,###.00")`, `Format("€#.##0,00")`)
-        - **Format modes**: Multiple display modes (`Standard`, `Accounting`, `Compact`, `Minimal`, `Symbol`, `Code`)
-        - **Internationalization**: Support for different locales (`en-US`, `de-DE`, `fr-FR`, `it-IT`, etc.) with locale-specific formatting rules
-        - **Separate component access**: Access major and minor units independently (e.g., `100 dollars` and `50 cents`)
-    - **Money parsing** - Parse from formatted strings ("$100.50", "100.50 USD", "€100,50")
-    - **Percentage operations** - Calculate percentage of money (e.g., 15% of $100)
-    - **Locale-aware formatting** - Format with currency symbols, locale-specific separators ($100.50 vs €100,50)
-    - **Human-readable formatting** - "one hundred dollars and fifty cents"
-    - **Money ranges/intervals** - Check if money falls within a range (between two amounts)
-    - **Money scaling by float** - Multiply/divide by float64 (for ratios, percentages, exchange rates)
-    - **Currency symbol formatting** - Format with symbol positioning (before/after based on currency)
-    - **Accounting format** - Format negative amounts as (100.50) instead of -100.50
-    - **Major/Minor unit access** - Get separate major and minor unit components
-    - **Money aggregation** - Min(), Max(), Average() operations for slices of Money
-    - **Money parsing validation** - Validate and parse money from various string formats
-    - **Tolerance-based comparison** - Compare money within a tolerance range (for floating-point conversion)
-    - **Banknote/coin breakdown** - Split money into currency denominations
+- **Enhanced formatting options**
+  - **Currency conversion**: Based on exchange rates convert currencies
+    - **Currency symbol formatting**: Display amounts with symbols (`$100.50`, `€100,50`, `£100.50`) with proper symbol positioning (before/after) based on currency rules
+    - **Locale-aware number formatting**: Thousand separators (`,` or `.`) and decimal separators (`.` or `,`) according to locale conventions (e.g., `1,234.56 USD` vs `1.234,56 EUR`)
+    - **Accounting format**: Display negative amounts in accounting notation `(100.50)` instead of `-100.50`
+    - **Compact notation**: Abbreviated formats for large amounts (`$1.5K`, `$1.2M`, `$5.3B`, `€2.4K`)
+    - **Custom format strings**: Fine-grained control via format patterns (e.g., `Format("$#,###.00")`, `Format("€#.##0,00")`)
+    - **Format modes**: Multiple display modes (`Standard`, `Accounting`, `Compact`, `Minimal`, `Symbol`, `Code`)
+    - **Internationalization**: Support for different locales (`en-US`, `de-DE`, `fr-FR`, `it-IT`, etc.) with locale-specific formatting rules
+    - **Separate component access**: Access major and minor units independently (e.g., `100 dollars` and `50 cents`)
+  - **Money parsing** - Parse from formatted strings ("$100.50", "100.50 USD", "€100,50")
+  - **Percentage operations** - Calculate percentage of money (e.g., 15% of $100)
+  - **Locale-aware formatting** - Format with currency symbols, locale-specific separators ($100.50 vs €100,50)
+  - **Human-readable formatting** - "one hundred dollars and fifty cents"
+  - **Money ranges/intervals** - Check if money falls within a range (between two amounts)
+  - **Money scaling by float** - Multiply/divide by float64 (for ratios, percentages, exchange rates)
+  - **Currency symbol formatting** - Format with symbol positioning (before/after based on currency)
+  - **Accounting format** - Format negative amounts as (100.50) instead of -100.50
+  - **Major/Minor unit access** - Get separate major and minor unit components
+  - **Money aggregation** - Min(), Max(), Average() operations for slices of Money
+  - **Money parsing validation** - Validate and parse money from various string formats
+  - **Tolerance-based comparison** - Compare money within a tolerance range (for floating-point conversion)
+  - **Banknote/coin breakdown** - Split money into currency denominations
     - **Format as different display modes** - Standard, accounting, compact formats    
 
 
@@ -249,7 +249,7 @@ Benchmark results (go 1.x, 2s per benchmark, 4 CPUs):
 
 > **Disclaimer:** This comparison was generated using AI tools and is based on publicly available documentation and code analysis as of the latest review. Feature support may vary by version. Performance metrics for other libraries are estimates and should be verified with actual benchmarks. Users are encouraged to verify claims independently.
 
-| Feature | **goodmoney** | govalues | rhymond | bojanz/currency |
+| Feature | **goodmoney** | govalues | Rhymond/go-money | bojanz/currency |
 |---------|----------------|----------|---------|-----------------|
 | **Storage** | `int64` minor units | Floating point (`float64`) | Fixed point (decimal) | Floating point (`decimal.Decimal`) |
 | **Precision** | Currency-dependent (0-4 decimals) | 19 digits | 18 digits | 39 digits |
