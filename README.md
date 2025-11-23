@@ -100,10 +100,76 @@ m.Negative()  // -100.50 ETB
 
 ### Formatting
 
+#### Basic Formatting
+
 ```go
 m, _ := goodmoney.New(100.50, goodmoney.ETB)
 fmt.Println(m)        // 100.50 ETB
 fmt.Printf("%s", m)   // 100.50 ETB
+```
+
+#### Locale-Aware Formatting
+
+```go
+import "golang.org/x/text/language"
+
+m, _ := goodmoney.New(1234.56, goodmoney.USD)
+
+// Format with locale
+fmt.Println(m.Format(language.AmericanEnglish))  // $1,234.56
+fmt.Println(m.Format(language.German))            // 1.234,56 $
+fmt.Println(m.Format(language.French))           // 1 234,56 $
+```
+
+#### Format Modes
+
+```go
+m, _ := goodmoney.New(1234.56, goodmoney.USD)
+
+// Standard format (default)
+m.FormatWithMode(language.AmericanEnglish, goodmoney.FormatStandard)
+// Returns: "$1,234.56"
+
+// Accounting format (parentheses for negatives)
+neg, _ := goodmoney.New(-100.50, goodmoney.USD)
+neg.FormatWithMode(language.AmericanEnglish, goodmoney.FormatAccounting)
+// Returns: "($100.50)"
+
+// Compact notation
+large, _ := goodmoney.New(1500000.00, goodmoney.USD)
+large.FormatWithMode(language.AmericanEnglish, goodmoney.FormatCompact)
+// Returns: "$1.5M"
+
+// Symbol only
+m.FormatWithMode(language.AmericanEnglish, goodmoney.FormatSymbol)
+// Returns: "$1,234.56"
+
+// Code only (same as String())
+m.FormatWithMode(language.AmericanEnglish, goodmoney.FormatCode)
+// Returns: "1234.56 USD"
+
+// Minimal (no thousand separators)
+m.FormatWithMode(language.AmericanEnglish, goodmoney.FormatMinimal)
+// Returns: "$1234.56"
+```
+
+#### Format Options
+
+```go
+opts := goodmoney.FormatOptions{
+    Locale: language.German,
+    Mode:   goodmoney.FormatStandard,
+}
+m.FormatWithOptions(opts)
+// Returns: "1.234,56 $" (German formatting)
+```
+
+#### Major and Minor Units
+
+```go
+m, _ := goodmoney.New(100.50, goodmoney.USD)
+m.MajorUnit()  // 100 (dollars)
+m.MinorUnit()  // 50 (cents)
 ```
 
 ### JSON Serialization
@@ -195,6 +261,12 @@ Money
 
 - `func (m *Money) Scan(src interface{}) error`
 - `func (m Money) Value() (driver.Value, error)`
+
+- `func (m Money) MajorUnit() int64`
+- `func (m Money) MinorUnit() int64`
+- `func (m Money) Format(locale language.Tag) string`
+- `func (m Money) FormatWithMode(locale language.Tag, mode FormatMode) string`
+- `func (m Money) FormatWithOptions(opts FormatOptions) string`
 
 ### Benchmark
 
